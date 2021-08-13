@@ -161,16 +161,6 @@
                     </property>
                    </widget>
                   </item>
-                  <item>
-                   <widget class="QCheckBox" name="performCulling">
-                    <property name="toolTip">
-                     <string>Enabling reduces startup time and memory usage</string>
-                    </property>
-                    <property name="text">
-                     <string>Load covers only when needed</string>
-                    </property>
-                   </widget>
-                  </item>
                  </layout>
                 </item>
                 <item>

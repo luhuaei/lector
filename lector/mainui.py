@@ -45,7 +45,7 @@ from app.lector.lector.widgets import Tab, DragDropListView, DragDropTableView
 from app.lector.lector.delegates import LibraryDelegate
 from app.lector.lector.threaded import BackGroundTabUpdate, BackGroundBookAddition, BackGroundBookDeletion
 from app.lector.lector.library import Library
-from app.lector.lector.guifunctions import QImageFactory, CoverLoadingAndCulling, ViewProfileModification
+from app.lector.lector.guifunctions import QImageFactory, ViewProfileModification
 from app.lector.lector.settings import Settings
 from app.lector.lector.settingsdialog import SettingsUI
 from app.lector.lector.metadatadialog import MetadataUI
@@ -147,15 +147,6 @@ class MainUI(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
 
         # Init the Library
         self.lib_ref = Library(self)
-
-        # Initialize Cover loading functions
-        # Must be after the Library init
-        self.cover_functions = CoverLoadingAndCulling(self)
-
-        # Init the culling timer
-        self.culling_timer = QtCore.QTimer()
-        self.culling_timer.setSingleShot(True)
-        self.culling_timer.timeout.connect(self.cover_functions.cull_covers)
 
         # Initialize profile modification functions
         self.profile_functions = ViewProfileModification(self)
@@ -279,7 +270,6 @@ class MainUI(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
         self.lib_ref.generate_proxymodels()
         self.lib_ref.generate_library_tags()
         self.set_library_filter()
-        self.start_culling_timer()
 
         # ListView
         self.listView.setGridSize(QtCore.QSize(175, 240))
@@ -289,7 +279,6 @@ class MainUI(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
         self.listView.setItemDelegate(LibraryDelegate(self.temp_dir.path(), self))
         self.listView.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.listView.customContextMenuRequested.connect(self.generate_library_context_menu)
-        self.listView.verticalScrollBar().valueChanged.connect(self.start_culling_timer)
         self.listView.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
         self.listView.setAcceptDrops(True)
 
@@ -574,9 +563,6 @@ class MainUI(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
             str(self.lib_ref.itemProxyModel.rowCount()) +
             self._translate('Main_UI', ' books'))
 
-        if not self.settings['perform_culling']:
-            self.cover_functions.load_all_covers()
-
     def switch_library_view(self):
         if self.libraryToolBar.coverViewButton.isChecked():
             self.stackedWidget.setCurrentIndex(0)
@@ -610,7 +596,6 @@ class MainUI(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
         # If library
         if self.tabWidget.currentIndex() == 0:
             self.resizeEvent()
-            self.start_culling_timer()
 
             if self.settings['show_bars']:
                 self.bookToolBar.hide()
@@ -843,15 +828,6 @@ class MainUI(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
             is_cover_loaded = self.lib_ref.libraryModel.data(
                 edit_book, QtCore.Qt.UserRole + 8)
 
-            # Loads a cover in case culling is enabled and the table view is visible
-            if not is_cover_loaded:
-                book_hash = self.lib_ref.libraryModel.data(
-                    edit_book, QtCore.Qt.UserRole + 6)
-                book_item = self.lib_ref.libraryModel.item(edit_book.row())
-                book_cover = database.DatabaseFunctions(
-                    self.database_path).fetch_covers_only([book_hash])[0][1]
-                self.cover_functions.cover_loader(book_item, book_cover)
-
             cover = self.lib_ref.libraryModel.item(
                 edit_book.row()).icon()
             title = self.lib_ref.libraryModel.data(
@@ -981,12 +957,6 @@ class MainUI(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
             self.bookToolBar.setVisible(
                 not self.bookToolBar.isVisible())
 
-        self.start_culling_timer()
-
-    def start_culling_timer(self):
-        if self.settings['perform_culling']:
-            self.culling_timer.start(90)
-
     def resizeEvent(self, event=None):
         if event:
             # This implies a vertical resize event only
@@ -1018,7 +988,6 @@ class MainUI(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
             layout_extra_space_per_image = space_left // num_images
             self.listView.setGridSize(
                 QtCore.QSize(default_size + layout_extra_space_per_image, 250))
-            self.start_culling_timer()
         except ZeroDivisionError:  # Initial resize is ignored
             return
 

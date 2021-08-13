@@ -98,7 +98,6 @@ class SettingsUI(QtWidgets.QDialog, settingswindow.Ui_Dialog):
         self.coverShadows.setChecked(self.main_window.settings['cover_shadows'])
         self.refreshLibrary.setChecked(self.main_window.settings['scan_library'])
         self.fileRemember.setChecked(self.main_window.settings['remember_files'])
-        self.performCulling.setChecked(self.main_window.settings['perform_culling'])
         self.cachingEnabled.setChecked(self.main_window.settings['caching_enabled'])
         self.hideScrollBars.setChecked(self.main_window.settings['hide_scrollbars'])
         self.attenuateTitles.setChecked(self.main_window.settings['attenuate_titles'])
@@ -110,7 +109,6 @@ class SettingsUI(QtWidgets.QDialog, settingswindow.Ui_Dialog):
         self.coverShadows.clicked.connect(self.manage_checkboxes)
         self.refreshLibrary.clicked.connect(self.manage_checkboxes)
         self.fileRemember.clicked.connect(self.manage_checkboxes)
-        self.performCulling.clicked.connect(self.manage_checkboxes)
         self.cachingEnabled.clicked.connect(self.manage_checkboxes)
         self.hideScrollBars.clicked.connect(self.manage_checkboxes)
         self.attenuateTitles.clicked.connect(self.manage_checkboxes)
@@ -418,16 +416,12 @@ class SettingsUI(QtWidgets.QDialog, settingswindow.Ui_Dialog):
             'coverShadows': 'cover_shadows',
             'refreshLibrary': 'scan_library',
             'fileRemember': 'remember_files',
-            'performCulling': 'perform_culling',
             'cachingEnabled': 'caching_enabled',
             'hideScrollBars': 'hide_scrollbars',
             'attenuateTitles': 'attenuate_titles'}
 
         self.main_window.settings[
             sender_dict[sender]] = not self.main_window.settings[sender_dict[sender]]
-
-        if not self.performCulling.isChecked():
-            self.main_window.cover_functions.load_all_covers()
 
     def generate_annotations(self):
         saved_annotations = self.main_window.settings['annotations']

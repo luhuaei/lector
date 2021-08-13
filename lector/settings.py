@@ -112,8 +112,6 @@ class Settings:
             'scanLibraryAtStart', 'False').capitalize())
         self.parent.settings['remember_files'] = literal_eval(self.settings.value(
             'rememberFiles', 'True').capitalize())
-        self.parent.settings['perform_culling'] = literal_eval(self.settings.value(
-            'performCulling', 'True').capitalize())
         self.parent.settings['dictionary_language'] = self.settings.value(
             'dictionaryLanguage', 'en')
         self.parent.settings['caching_enabled'] = literal_eval(self.settings.value(
@@ -204,8 +202,7 @@ class Settings:
         self.settings.beginGroup('settingsSwitches')
         self.settings.setValue('rememberFiles', str(current_settings['remember_files']))
         self.settings.setValue('coverShadows', str(current_settings['cover_shadows']))
-        self.settings.setValue('scanLibraryAtStart', str(current_settings['scan_library']))
-        self.settings.setValue('performCulling', str(current_settings['perform_culling']))
+        self.settings.setValue('scanLibraryAtStart', str(current_settings['scan_library']))        
         self.settings.setValue('dictionaryLanguage', str(current_settings['dictionary_language']))
         self.settings.setValue('cachingEnabled', str(current_settings['caching_enabled']))
         self.settings.setValue('hideScrollBars', str(current_settings['hide_scrollbars']))

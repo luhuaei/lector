@@ -162,11 +162,6 @@ class Library:
 
             self.libraryModel.appendRow(item)
 
-        # The is_database_ready boolean is required when a new thread sends
-        # books here for model generation.
-        if not self.main_window.settings['perform_culling'] and is_database_ready:
-            self.main_window.cover_functions.load_all_covers()
-
     def generate_proxymodels(self):
         self.itemProxyModel = ItemProxyModel()
         self.itemProxyModel.setSourceModel(self.libraryModel)
@@ -239,7 +234,6 @@ class Library:
             sort_order = QtCore.Qt.DescendingOrder
 
         self.itemProxyModel.sort(0, sort_order)
-        self.main_window.start_culling_timer()
 
     def generate_library_tags(self):
         db_library_directories = database.DatabaseFunctions(

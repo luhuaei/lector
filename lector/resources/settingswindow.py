@@ -96,9 +96,6 @@ class Ui_Dialog(object):
         self.coverShadows = QtWidgets.QCheckBox(self.groupBox)
         self.coverShadows.setObjectName("coverShadows")
         self.horizontalLayout_3.addWidget(self.coverShadows)
-        self.performCulling = QtWidgets.QCheckBox(self.groupBox)
-        self.performCulling.setObjectName("performCulling")
-        self.horizontalLayout_3.addWidget(self.performCulling)
         self.verticalLayout_2.addLayout(self.horizontalLayout_3)
         self.horizontalLayout_9 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_9.setObjectName("horizontalLayout_9")
@@ -377,8 +374,6 @@ class Ui_Dialog(object):
         self.refreshLibrary.setText(_translate("Dialog", "Startup: Refresh library"))
         self.fileRemember.setText(_translate("Dialog", "Remember open files"))
         self.coverShadows.setText(_translate("Dialog", "Cover shadows"))
-        self.performCulling.setToolTip(_translate("Dialog", "Enabling reduces startup time and memory usage"))
-        self.performCulling.setText(_translate("Dialog", "Load covers only when needed"))
         self.attenuateTitles.setText(_translate("Dialog", "Shrink long book titles"))
         self.groupBox_2.setTitle(_translate("Dialog", "Reading"))
         self.hideScrollBars.setToolTip(_translate("Dialog", "Horizontal scrolling with Alt + Scroll\n"
