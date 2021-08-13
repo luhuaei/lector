@@ -608,43 +608,6 @@ class PliantQGraphicsScene(QtWidgets.QGraphicsScene):
         self.parent.show()
 
 
-class DragDropListView(QtWidgets.QListView):
-    # This is the library listview
-    def __init__(self, main_window, parent):
-        super(DragDropListView, self).__init__(parent)
-        self.main_window = main_window
-        self.setAcceptDrops(True)
-        self.setDragDropMode(QtWidgets.QAbstractItemView.InternalMove)
-        self.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
-        self.setResizeMode(QtWidgets.QListView.Fixed)
-        self.setLayoutMode(QtWidgets.QListView.SinglePass)
-        self.setViewMode(QtWidgets.QListView.IconMode)
-        self.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
-        self.setProperty("showDropIndicator", False)
-        self.setProperty("isWrapping", True)
-        self.setFrameShape(QtWidgets.QFrame.NoFrame)
-        self.setUniformItemSizes(True)
-        self.setWordWrap(True)
-        self.setObjectName("listView")
-
-    def dragEnterEvent(self, event):
-        if event.mimeData().hasUrls():
-            event.acceptProposedAction()
-        else:
-            super(DragDropListView, self).dragEnterEvent(event)
-
-    def dragMoveEvent(self, event):
-        super(DragDropListView, self).dragMoveEvent(event)
-
-    def dropEvent(self, event):
-        if event.mimeData().hasUrls():
-            file_list = [url.path() for url in event.mimeData().urls()]
-            self.main_window.process_post_hoc_files(file_list, False)
-            event.acceptProposedAction()
-        else:
-            super(DragDropListView, self).dropEvent(event)
-
-
 class DragDropTableView(QtWidgets.QTableView):
     # This is the library tableview
     def __init__(self, main_window, parent):

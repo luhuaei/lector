@@ -22,7 +22,7 @@ import pathlib
 from PyQt5 import QtGui, QtCore
 
 from app.lector.lector import database
-from app.lector.lector.models import TableProxyModel, ItemProxyModel
+from app.lector.lector.models import TableProxyModel
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +31,6 @@ class Library:
     def __init__(self, parent):
         self.main_window = parent
         self.libraryModel = None
-        self.itemProxyModel = None
         self.tableProxyModel = None
         self._translate = QtCore.QCoreApplication.translate
 
@@ -163,13 +162,6 @@ class Library:
             self.libraryModel.appendRow(item)
 
     def generate_proxymodels(self):
-        self.itemProxyModel = ItemProxyModel()
-        self.itemProxyModel.setSourceModel(self.libraryModel)
-        self.itemProxyModel.setSortCaseSensitivity(False)
-        s = QtCore.QSize(160, 250)  # Set icon sizing here
-        self.main_window.listView.setIconSize(s)
-        self.main_window.listView.setModel(self.itemProxyModel)
-
         self.tableProxyModel = TableProxyModel(
             self.main_window.temp_dir.path(),
             self.main_window.tableView.horizontalHeader(),
@@ -195,19 +187,6 @@ class Library:
             self.main_window.tableView.horizontalHeader().sortIndicatorSection())
         self.tableProxyModel.sort_table_columns()
 
-        # Item proxy model
-        self.itemProxyModel.invalidateFilter()
-        self.itemProxyModel.setFilterParams(
-            self.main_window.libraryToolBar.searchBar.text(),
-            self.main_window.active_library_filters,
-            self.main_window.libraryToolBar.sortingBox.currentIndex())
-        self.itemProxyModel.setFilterFixedString(
-            self.main_window.libraryToolBar.searchBar.text())
-
-        self.main_window.statusMessage.setText(
-            str(self.itemProxyModel.rowCount()) +
-            self._translate('Library', ' books'))
-
         # TODO
         # Allow sorting by type
 
@@ -223,17 +202,10 @@ class Library:
             4: 12,
             5: 7}
 
-        # Sorting according to roles and the drop down in the library toolbar
-        self.itemProxyModel.setSortRole(
-            QtCore.Qt.UserRole +
-            sort_roles[self.main_window.libraryToolBar.sortingBox.currentIndex()])
-
         # This can be expanded to other fields by appending to the list
         sort_order = QtCore.Qt.AscendingOrder
         if self.main_window.libraryToolBar.sortingBox.currentIndex() in [3, 4, 5]:
             sort_order = QtCore.Qt.DescendingOrder
-
-        self.itemProxyModel.sort(0, sort_order)
 
     def generate_library_tags(self):
         db_library_directories = database.DatabaseFunctions(

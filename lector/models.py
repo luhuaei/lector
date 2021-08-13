@@ -44,23 +44,6 @@ class BookmarkProxyModel(QtCore.QSortFilterProxyModel):
             return True
 
 
-class ItemProxyModel(QtCore.QSortFilterProxyModel):
-    def __init__(self, parent=None):
-        super(ItemProxyModel, self).__init__(parent)
-        self.filter_text = None
-        self.active_library_filters = None
-        self.sorting_box_position = None
-        self.common_functions = ProxyModelsCommonFunctions(self)
-
-    def setFilterParams(self, filter_text, active_library_filters, sorting_box_position):
-        self.common_functions.setFilterParams(
-            filter_text, active_library_filters, sorting_box_position)
-
-    def filterAcceptsRow(self, row, parent):
-        output = self.common_functions.filterAcceptsRow(row, parent)
-        return output
-
-
 class TableProxyModel(QtCore.QSortFilterProxyModel):
     def __init__(self, temp_dir, tableViewHeader, consider_read_at, parent=None):
         super(TableProxyModel, self).__init__(parent)

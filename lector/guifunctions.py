@@ -40,7 +40,6 @@ class ViewProfileModification:
     def __init__(self, main_window):
         self.main_window = main_window
 
-        self.listView = self.main_window.listView
         self.settings = self.main_window.settings
         self.bookToolBar = self.main_window.bookToolBar
         self.comic_profile = self.main_window.comic_profile
@@ -55,15 +54,6 @@ class ViewProfileModification:
                 return new_color
             else:
                 return current_color
-
-        # Special cases that don't affect (comic)book display
-        if signal_sender == 'libraryBackground':
-            current_color = self.settings['listview_background']
-            new_color = open_color_dialog(current_color)
-            self.listView.setStyleSheet("QListView {{background-color: {0}}}".format(
-                new_color.name()))
-            self.settings['listview_background'] = new_color
-            return
 
         if signal_sender == 'dialogBackground':
             current_color = self.settings['dialog_background']

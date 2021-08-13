@@ -408,17 +408,6 @@ class LibraryToolBar(QtWidgets.QToolBar):
             self._translate('LibraryToolBar', 'Delete book'),
             self)
 
-        self.coverViewButton = QtWidgets.QAction(
-            image_factory.get_image('view-grid'),
-            self._translate('LibraryToolBar', 'View as covers'),
-            self)
-        self.coverViewButton.setCheckable(True)
-        self.tableViewButton = QtWidgets.QAction(
-            image_factory.get_image('table'),
-            self._translate('LibraryToolBar', 'View as table'),
-            self)
-        self.tableViewButton.setCheckable(True)
-
         self.reloadLibraryButton = QtWidgets.QAction(
             image_factory.get_image('reload'),
             self._translate('LibraryToolBar', 'Scan Library'),
@@ -446,18 +435,9 @@ class LibraryToolBar(QtWidgets.QToolBar):
             self._translate('LibraryToolBar', 'About'),
             self)
 
-        # Auto unchecks the other QToolButton in case of clicking
-        self.viewButtons = QtWidgets.QActionGroup(self)
-        self.viewButtons.setExclusive(True)
-        self.viewButtons.addAction(self.coverViewButton)
-        self.viewButtons.addAction(self.tableViewButton)
-
         # Add buttons
         self.addAction(self.addButton)
         self.addAction(self.deleteButton)
-        self.addSeparator()
-        self.addAction(self.coverViewButton)
-        self.addAction(self.tableViewButton)
         self.addSeparator()
         self.addAction(self.reloadLibraryButton)
         self.addWidget(self.libraryFilterButton)

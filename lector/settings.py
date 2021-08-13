@@ -71,8 +71,6 @@ class Settings:
         self.parent.move(self.settings.value('windowPosition', QtCore.QPoint(0, 0)))
         self.parent.settings['current_view'] = int(self.settings.value('currentView', 0))
         self.parent.settings['main_window_headers'] = self.settings.value('tableHeaders', None)
-        self.parent.settings['listview_background'] = self.settings.value(
-            'listViewBackground', QtGui.QColor().fromRgb(33, 33, 33))
         self.parent.settings['icon_theme'] = self.settings.value('iconTheme', 'DarkIcons')
         self.settings.endGroup()
 
@@ -154,8 +152,6 @@ class Settings:
         self.settings.setValue('windowPosition', self.parent.pos())
         self.settings.setValue('currentView', self.parent.stackedWidget.currentIndex())
         self.settings.setValue('iconTheme', self.parent.settings['icon_theme'])
-        self.settings.setValue(
-            'listViewBackground', self.parent.settings['listview_background'])
 
         table_headers = []
         for i in range(7):
@@ -202,7 +198,7 @@ class Settings:
         self.settings.beginGroup('settingsSwitches')
         self.settings.setValue('rememberFiles', str(current_settings['remember_files']))
         self.settings.setValue('coverShadows', str(current_settings['cover_shadows']))
-        self.settings.setValue('scanLibraryAtStart', str(current_settings['scan_library']))        
+        self.settings.setValue('scanLibraryAtStart', str(current_settings['scan_library']))
         self.settings.setValue('dictionaryLanguage', str(current_settings['dictionary_language']))
         self.settings.setValue('cachingEnabled', str(current_settings['caching_enabled']))
         self.settings.setValue('hideScrollBars', str(current_settings['hide_scrollbars']))

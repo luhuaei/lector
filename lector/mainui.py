@@ -41,7 +41,7 @@ logger.log(60, f'Lector {VERSION} - Application started')
 from app.lector.lector import database
 from app.lector.lector import sorter
 from app.lector.lector.toolbars import LibraryToolBar, BookToolBar
-from app.lector.lector.widgets import Tab, DragDropListView, DragDropTableView
+from app.lector.lector.widgets import Tab, DragDropTableView
 from app.lector.lector.delegates import LibraryDelegate
 from app.lector.lector.threaded import BackGroundTabUpdate, BackGroundBookAddition, BackGroundBookDeletion
 from app.lector.lector.library import Library
@@ -68,10 +68,6 @@ class MainUI(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
 
         # Initialize translation function
         self._translate = QtCore.QCoreApplication.translate
-
-        # Create library widgets
-        self.listView = DragDropListView(self, self.listPage)
-        self.gridLayout_4.addWidget(self.listView, 0, 0, 1, 1)
 
         self.tableView = DragDropTableView(self, self.tablePage)
         self.gridLayout_3.addWidget(self.tableView, 0, 0, 1, 1)
@@ -158,8 +154,6 @@ class MainUI(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
         # Library toolbar
         self.libraryToolBar.addButton.triggered.connect(self.add_books)
         self.libraryToolBar.deleteButton.triggered.connect(self.delete_books)
-        self.libraryToolBar.coverViewButton.triggered.connect(self.switch_library_view)
-        self.libraryToolBar.tableViewButton.triggered.connect(self.switch_library_view)
         self.libraryToolBar.reloadLibraryButton.triggered.connect(
             self.settingsDialog.start_library_scan)
         self.libraryToolBar.colorButton.triggered.connect(self.get_color)
@@ -173,10 +167,9 @@ class MainUI(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
         self.libraryToolBar.searchBar.textChanged.connect(self.statusbar_visibility)
         self.addToolBar(self.libraryToolBar)
 
-        if self.settings['current_view'] == 0:
-            self.libraryToolBar.coverViewButton.trigger()
-        else:
-            self.libraryToolBar.tableViewButton.trigger()
+        self.stackedWidget.setCurrentIndex(1)
+        self.libraryToolBar.sortingBoxAction.setVisible(False)
+        self.resizeEvent()
 
         # Book toolbar
         self.bookToolBar.addBookmarkButton.triggered.connect(
@@ -271,29 +264,6 @@ class MainUI(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
         self.lib_ref.generate_library_tags()
         self.set_library_filter()
 
-        # ListView
-        self.listView.setGridSize(QtCore.QSize(175, 240))
-        self.listView.setMouseTracking(True)
-        self.listView.verticalScrollBar().setSingleStep(9)
-        self.listView.doubleClicked.connect(self.library_doubleclick)
-        self.listView.setItemDelegate(LibraryDelegate(self.temp_dir.path(), self))
-        self.listView.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.listView.customContextMenuRequested.connect(self.generate_library_context_menu)
-        self.listView.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
-        self.listView.setAcceptDrops(True)
-
-        self.listView.setStyleSheet(
-            "QListView {{background-color: {0}}}".format(
-                self.settings['listview_background'].name()))
-
-        # TODO
-        # Maybe use this for readjusting the border of the focus rectangle
-        # in the listView. Maybe this is a job for QML?
-
-        # self.listView.setStyleSheet(
-        #     "QListView::item:selected { border-color:blue; border-style:outset;"
-        #     "border-width:2px; color:black; }")
-
         # TableView
         self.tableView.doubleClicked.connect(self.library_doubleclick)
         self.tableView.horizontalHeader().setSectionResizeMode(
@@ -335,7 +305,6 @@ class MainUI(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
         self.ksDeletePressed.setContext(QtCore.Qt.ApplicationShortcut)
         self.ksDeletePressed.activated.connect(self.delete_pressed)
 
-        self.listView.setFocus()
         self.open_books_at_startup()
 
         # Scan the library @ startup
@@ -441,7 +410,6 @@ class MainUI(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
 
         if self.settings['last_open_tab'] == 'library':
             self.tabWidget.setCurrentIndex(0)
-            self.listView.setFocus()
             self.settings['last_open_tab'] = None
             return
 
@@ -480,15 +448,9 @@ class MainUI(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
     def get_selection(self):
         selected_indexes = None
 
-        if self.listView.isVisible():
-            selected_books = self.lib_ref.itemProxyModel.mapSelectionToSource(
-                self.listView.selectionModel().selection())
-            selected_indexes = [i.indexes()[0] for i in selected_books]
-
-        elif self.tableView.isVisible():
-            selected_books = self.tableView.selectionModel().selectedRows()
-            selected_indexes = [
-                self.lib_ref.tableProxyModel.mapToSource(i) for i in selected_books]
+        selected_books = self.tableView.selectionModel().selectedRows()
+        selected_indexes = [
+            self.lib_ref.tableProxyModel.mapToSource(i) for i in selected_books]
 
         return selected_indexes
 
@@ -559,20 +521,6 @@ class MainUI(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
         self.lib_ref.update_proxymodels()
         self.lib_ref.generate_library_tags()
 
-        self.statusMessage.setText(
-            str(self.lib_ref.itemProxyModel.rowCount()) +
-            self._translate('Main_UI', ' books'))
-
-    def switch_library_view(self):
-        if self.libraryToolBar.coverViewButton.isChecked():
-            self.stackedWidget.setCurrentIndex(0)
-            self.libraryToolBar.sortingBoxAction.setVisible(True)
-        else:
-            self.stackedWidget.setCurrentIndex(1)
-            self.libraryToolBar.sortingBoxAction.setVisible(False)
-
-        self.resizeEvent()
-
     def tab_switch(self):
         try:
             # Disallow library tab movement
@@ -600,13 +548,6 @@ class MainUI(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
             if self.settings['show_bars']:
                 self.bookToolBar.hide()
                 self.libraryToolBar.show()
-
-            if self.lib_ref.itemProxyModel:
-                # Making the proxy model available doesn't affect
-                # memory utilization at all. Bleh.
-                self.statusMessage.setText(
-                    str(self.lib_ref.itemProxyModel.rowCount()) +
-                    self._translate('Main_UI', ' Books'))
 
             if self.libraryToolBar.searchBar.text() != '':
                 self.statusBar.setVisible(True)
@@ -680,10 +621,7 @@ class MainUI(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
     def library_doubleclick(self, index):
         sender = self.sender().objectName()
 
-        if sender == 'listView':
-            source_index = self.lib_ref.itemProxyModel.mapToSource(index)
-        elif sender == 'tableView':
-            source_index = self.lib_ref.tableProxyModel.mapToSource(index)
+        source_index = self.lib_ref.tableProxyModel.mapToSource(index)
 
         item = self.lib_ref.libraryModel.item(source_index.row(), 0)
         metadata = item.data(QtCore.Qt.UserRole + 3)
@@ -715,9 +653,6 @@ class MainUI(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
     def show_settings(self, stacked_widget_index):
         if not self.settingsDialog.isVisible():
             self.settingsDialog.show()
-            index = self.settingsDialog.listModel.index(
-                stacked_widget_index, 0)
-            self.settingsDialog.listView.setCurrentIndex(index)
         else:
             self.settingsDialog.hide()
 
@@ -958,38 +893,7 @@ class MainUI(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
                 not self.bookToolBar.isVisible())
 
     def resizeEvent(self, event=None):
-        if event:
-            # This implies a vertical resize event only
-            # We ain't about that lifestyle
-            if event.oldSize().width() == event.size().width():
-                return
-
-        # The hackiness of this hack is just...
-        default_size = 170  # This is size of the QIcon (160 by default) +
-                            # minimum margin needed between thumbnails
-
-        # for n icons, the n + 1th icon will appear at > n +1.11875
-        # First, calculate the number of images per row
-        i = self.listView.viewport().width() / default_size
-        rem = i - int(i)
-        if rem >= .21875 and rem <= .9999:
-            num_images = int(i)
-        else:
-            num_images = int(i) - 1
-
-        # The rest is illustrated using informative variable names
-        space_occupied = num_images * default_size
-        # 12 is the scrollbar width
-        # Larger numbers keep reduce flickering but also increase
-        # the distance from the scrollbar
-        space_left = (
-            self.listView.viewport().width() - space_occupied - 19)
-        try:
-            layout_extra_space_per_image = space_left // num_images
-            self.listView.setGridSize(
-                QtCore.QSize(default_size + layout_extra_space_per_image, 250))
-        except ZeroDivisionError:  # Initial resize is ignored
-            return
+        return
 
     def closeEvent(self, event=None):
         if event:
