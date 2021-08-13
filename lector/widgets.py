@@ -178,11 +178,6 @@ class Tab(QtWidgets.QWidget):
         self.main_window.tabWidget.setTabIcon(
             this_tab_index, QtGui.QIcon(cover_icon))
 
-        # Hide mouse cursor timer
-        self.mouseHideTimer = QtCore.QTimer()
-        self.mouseHideTimer.setSingleShot(True)
-        self.mouseHideTimer.timeout.connect(self.hide_mouse)
-
         # Hide the tab bar in case distraction free mode is active
         if not self.main_window.settings['show_bars']:
             self.main_window.tabWidget.tabBar().setVisible(False)
@@ -390,7 +385,6 @@ class Tab(QtWidgets.QWidget):
         if not self.are_we_doing_images_only:
             self.hiddenButton.animateClick(50)
 
-        self.mouseHideTimer.start(2000)
         self.is_fullscreen = True
 
     def exit_fullscreen(self):
@@ -423,7 +417,6 @@ class Tab(QtWidgets.QWidget):
         if not self.main_window.settings['show_bars']:
             self.main_window.toggle_distraction_free()
 
-        self.mouseHideTimer.start(2000)
         self.contentView.setFocus()
 
     def set_content(self, required_position, tocBox_readjust=False, record_position=False):
@@ -567,9 +560,6 @@ class Tab(QtWidgets.QWidget):
                 new_position = this_cursor.position()
                 if old_position == new_position:
                     break
-
-    def hide_mouse(self):
-        self.contentView.viewport().setCursor(QtCore.Qt.BlankCursor)
 
     def sneaky_change(self):
         direction = -1
