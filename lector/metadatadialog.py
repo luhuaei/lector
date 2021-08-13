@@ -19,7 +19,6 @@ import logging
 from PyQt5 import QtWidgets, QtCore, QtGui
 
 from app.lector.lector import database
-from app.lector.lector.widgets import PliantQGraphicsScene
 from app.lector.lector.resources import metadata
 
 logger = logging.getLogger(__name__)
@@ -55,9 +54,6 @@ class MetadataUI(QtWidgets.QDialog, metadata.Ui_Dialog):
         self.previous_position = None
         self.cover_for_database = None
 
-        self.coverView.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self.coverView.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-
         self.okButton.clicked.connect(self.ok_pressed)
         self.cancelButton.clicked.connect(self.cancel_pressed)
         self.dialogBackground.clicked.connect(self.color_background)
@@ -74,22 +70,10 @@ class MetadataUI(QtWidgets.QDialog, metadata.Ui_Dialog):
         self.book_index = book_index
         self.book_year = year
 
-        self.load_cover(cover)
-
         self.titleLine.setText(title)
         self.authorLine.setText(author)
         self.yearLine.setText(year)
         self.tagsLine.setText(tags)
-
-    def load_cover(self, cover, use_as_is=False):
-        if use_as_is:
-            image_pixmap = cover
-        else:
-            image_pixmap = cover.pixmap(QtCore.QSize(140, 205))
-
-        graphics_scene = PliantQGraphicsScene(self)
-        graphics_scene.addPixmap(image_pixmap)
-        self.coverView.setScene(graphics_scene)
 
     def ok_pressed(self, event=None):
         book_item = self.parent.lib_ref.libraryModel.item(self.book_index.row())
@@ -154,8 +138,6 @@ class MetadataUI(QtWidgets.QDialog, metadata.Ui_Dialog):
 
         self.setStyleSheet(
             "QDialog {{background-color: {0}}}".format(background.name()))
-        self.coverView.setStyleSheet(
-            "QGraphicsView {{background-color: {0}}}".format(background.name()))
 
         if not set_initial:
             self.show()

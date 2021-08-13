@@ -23,11 +23,6 @@ class Ui_Dialog(object):
         self.gridLayout.setObjectName("gridLayout")
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
-        self.coverView = QtWidgets.QGraphicsView(Dialog)
-        self.coverView.setMaximumSize(QtCore.QSize(165, 16777215))
-        self.coverView.setFrameShadow(QtWidgets.QFrame.Plain)
-        self.coverView.setObjectName("coverView")
-        self.horizontalLayout.addWidget(self.coverView)
         self.verticalLayout = QtWidgets.QVBoxLayout()
         self.verticalLayout.setObjectName("verticalLayout")
         self.titleLine = QtWidgets.QLineEdit(Dialog)
@@ -86,7 +81,6 @@ class Ui_Dialog(object):
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "Edit metadata"))
-        self.coverView.setToolTip(_translate("Dialog", "Cover (click to change)"))
         self.titleLine.setToolTip(_translate("Dialog", "Title"))
         self.titleLine.setPlaceholderText(_translate("Dialog", "Title"))
         self.authorLine.setToolTip(_translate("Dialog", "Author"))

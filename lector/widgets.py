@@ -573,41 +573,6 @@ class Tab(QtWidgets.QWidget):
         self.contentView.hide()
         self.main_window.closeEvent()
 
-
-class PliantQGraphicsScene(QtWidgets.QGraphicsScene):
-    def __init__(self, parent=None):
-        super(PliantQGraphicsScene, self).__init__(parent)
-        self.parent = parent
-        self._translate = QtCore.QCoreApplication.translate
-
-    def mouseReleaseEvent(self, event):
-        self.parent.previous_position = self.parent.pos()
-
-        image_files = '*.jpg *.png'
-        dialog_prompt = self._translate('PliantQGraphicsScene', 'Select new cover')
-        images_string = self._translate('PliantQGraphicsScene', 'Images')
-        new_cover = QtWidgets.QFileDialog.getOpenFileName(
-            None, dialog_prompt, self.parent.parent.settings['last_open_path'],
-            f'{images_string} ({image_files})')[0]
-
-        if not new_cover:
-            self.parent.show()
-            return
-
-        with open(new_cover, 'rb') as cover_ref:
-            cover_bytes = cover_ref.read()
-            resized_cover = resize_image(cover_bytes)
-            self.parent.cover_for_database = resized_cover
-
-        cover_pixmap = QtGui.QPixmap()
-        cover_pixmap.load(new_cover)
-        cover_pixmap = cover_pixmap.scaled(
-            140, 205, QtCore.Qt.IgnoreAspectRatio)
-
-        self.parent.load_cover(cover_pixmap, True)
-        self.parent.show()
-
-
 class DragDropTableView(QtWidgets.QTableView):
     # This is the library tableview
     def __init__(self, main_window, parent):
