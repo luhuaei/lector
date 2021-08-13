@@ -30,7 +30,7 @@ from app.lector.lector.models import MostExcellentFileSystemModel
 from app.lector.lector.threaded import BackGroundBookSearch, BackGroundBookAddition
 from app.lector.lector.resources import settingswindow
 from app.lector.lector.settings import Settings
-from app.lector.lector.logger import logger_filename, VERSION
+from app.lector.lector.logger import VERSION
 
 logger = logging.getLogger(__name__)
 
@@ -178,11 +178,9 @@ class SettingsUI(QtWidgets.QDialog, settingswindow.Ui_Dialog):
         # About... About
         self.aboutTabWidget.setDocumentMode(True)
         self.aboutTabWidget.setContentsMargins(0, 0, 0, 0)
-        self.logBox.setReadOnly(True)
 
         # About buttons
         self.resetButton.clicked.connect(self.delete_database)
-        self.clearLogButton.clicked.connect(self.clear_log)
 
         # Hide the image annotation tab
         # TODO
@@ -196,7 +194,7 @@ class SettingsUI(QtWidgets.QDialog, settingswindow.Ui_Dialog):
 
         valid_buttons = {
             0: (self.okButton,),
-            3: (self.resetButton, self.clearLogButton),}
+            3: (self.resetButton,),}
 
         for i in valid_buttons:
             if i == switch_to:
@@ -357,10 +355,6 @@ class SettingsUI(QtWidgets.QDialog, settingswindow.Ui_Dialog):
         event.accept()
 
     def showEvent(self, event):
-        # Load log into the plainTextEdit
-        with open(logger_filename) as infile:
-            log_text = infile.read()
-            self.logBox.setPlainText(log_text)
         # Annotation preview
         self.format_preview()
         # Make copy of tags in case of a nope.jpg
@@ -542,7 +536,3 @@ class SettingsUI(QtWidgets.QDialog, settingswindow.Ui_Dialog):
         confirm_deletion.buttonClicked.connect(ifcontinue)
         confirm_deletion.show()
         confirm_deletion.exec_()
-
-    def clear_log(self):
-        self.logBox.clear()
-        open(logger_filename, 'w').close()

@@ -16,43 +16,15 @@
 
 VERSION = '0.5.GittyGittyBangBang'
 
-import os
 import logging
 
-from PyQt5 import QtCore
-
-location_prefix = os.path.join(
-    QtCore.QStandardPaths.writableLocation(QtCore.QStandardPaths.AppDataLocation),
-    'Lector')
-logger_filename = os.path.join(location_prefix, 'Lector.log')
-
-
 def init_logging(cli_arguments):
-    # This needs a separate 'Lector' in the os.path.join because
-    # application name isn't explicitly set in this module
-
-    os.makedirs(location_prefix, exist_ok=True)
-
-    log_level = 30  # Warning and above
-    # Set log level according to command line arguments
-    try:
-        if cli_arguments[1] == 'debug':
-            log_level = 10  # Debug and above
-            print('Debug logging enabled')
-            try:
-                os.remove(logger_filename)  # Remove old log for clarity
-            except FileNotFoundError:
-                pass
-    except IndexError:
-        pass
+    log_level = 10  #
 
     # Create logging object
     logging.basicConfig(
-        filename=logger_filename,
-        filemode='a',
         format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
         datefmt='%Y/%m/%d  %H:%M:%S',
         level=log_level)
-    logging.addLevelName(60, 'HAMMERTIME')  ## Messages that MUST be logged
 
     return logging.getLogger('lector.main')

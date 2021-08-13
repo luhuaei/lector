@@ -689,16 +689,6 @@ Reopen book to see changes</string>
              </item>
             </layout>
            </widget>
-           <widget class="QWidget" name="logTab">
-            <attribute name="title">
-             <string>Log</string>
-            </attribute>
-            <layout class="QGridLayout" name="gridLayout_10">
-             <item row="0" column="0">
-              <widget class="QPlainTextEdit" name="logBox"/>
-             </item>
-            </layout>
-           </widget>
           </widget>
          </item>
         </layout>
@@ -711,13 +701,6 @@ Reopen book to see changes</string>
         <widget class="QPushButton" name="resetButton">
          <property name="text">
           <string>Reset Application</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="clearLogButton">
-         <property name="text">
-          <string>Clear Log</string>
          </property>
         </widget>
        </item>
