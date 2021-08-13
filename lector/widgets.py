@@ -24,7 +24,7 @@ import logging
 from PyQt5 import QtWidgets, QtGui, QtCore
 
 from app.lector.lector.sorter import resize_image
-from app.lector.lector.dockwidgets import PliantDockWidget, PliantNavBarWidget
+from app.lector.lector.dockwidgets import PliantDockWidget
 from app.lector.lector.contentwidgets import PliantQGraphicsView, PliantQTextBrowser
 
 logger = logging.getLogger(__name__)
@@ -135,19 +135,6 @@ class Tab(QtWidgets.QWidget):
                 QtCore.Qt.ScrollBarAsNeeded)
             self.contentView.setVerticalScrollBarPolicy(
                 QtCore.Qt.ScrollBarAsNeeded)
-
-        # Create a NavBar widget
-        if self.main_window.settings['nav_bar']:
-            self.navBar = PliantNavBarWidget(
-                self.main_window, self.contentView, self)
-            self.navBar.setFloating(True)
-            self.navBar.setTitleBarWidget(QtWidgets.QWidget(self))
-            self.navBar.hide()
-        else:
-            # This keeps from having to set visibility conditions
-            # everywhere
-            self.navBar = QtWidgets.QWidget()
-            self.navBar.setFixedSize(0, 0)
 
         # Create a common dock for bookmarks, annotations, and search
         self.sideDock = PliantDockWidget(
@@ -436,7 +423,6 @@ class Tab(QtWidgets.QWidget):
         if not self.main_window.settings['show_bars']:
             self.main_window.toggle_distraction_free()
 
-        self.navBar.hide()
         self.mouseHideTimer.start(2000)
         self.contentView.setFocus()
 
@@ -473,13 +459,6 @@ class Tab(QtWidgets.QWidget):
         # that calls set_position must specify if it needs this adjustment
         if tocBox_readjust:
             self.set_tocBox_index(required_position, None)
-
-            # The NavBar doesn't get declared until later
-            try:
-                self.set_tocBox_index(
-                    required_position, self.navBar.tocComboBox)
-            except AttributeError:
-                pass
 
         self.contentView.setFocus()
 
@@ -591,9 +570,6 @@ class Tab(QtWidgets.QWidget):
 
     def hide_mouse(self):
         self.contentView.viewport().setCursor(QtCore.Qt.BlankCursor)
-
-        if self.contentView.hasFocus():
-            self.navBar.hide()
 
     def sneaky_change(self):
         direction = -1

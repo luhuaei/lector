@@ -328,7 +328,6 @@ class PliantQGraphicsView(QtWidgets.QGraphicsView):
         else:
             self.mousePosition = event.pos()
 
-            self.parent.navBar.show()
             if QtWidgets.QApplication.mouseButtons() == QtCore.Qt.NoButton:
                 self.viewport().setCursor(QtCore.Qt.OpenHandCursor)
             else:
@@ -934,7 +933,6 @@ class PliantQTextBrowser(QtWidgets.QTextBrowser):
         else:
             self.mousePosition = event.pos()
 
-            self.parent.navBar.show()
             if self.annotation_mode:
                 self.viewport().setCursor(QtCore.Qt.IBeamCursor)
             else:
