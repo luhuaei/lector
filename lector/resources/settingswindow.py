@@ -114,9 +114,6 @@ class Ui_Dialog(object):
         self.navBarVisible = QtWidgets.QCheckBox(self.groupBox)
         self.navBarVisible.setObjectName("navBarVisible")
         self.horizontalLayout_16.addWidget(self.navBarVisible)
-        self.autoCover = QtWidgets.QCheckBox(self.groupBox)
-        self.autoCover.setObjectName("autoCover")
-        self.horizontalLayout_16.addWidget(self.autoCover)
         self.verticalLayout_2.addLayout(self.horizontalLayout_16)
         self.gridLayout_4.addLayout(self.verticalLayout_2, 0, 0, 1, 1)
         self.verticalLayout.addWidget(self.groupBox)
@@ -391,8 +388,6 @@ class Ui_Dialog(object):
         self.autoTags.setText(_translate("Dialog", "Generate tags from files"))
         self.attenuateTitles.setText(_translate("Dialog", "Shrink long book titles"))
         self.navBarVisible.setText(_translate("Dialog", "Show navigation bar"))
-        self.autoCover.setToolTip(_translate("Dialog", "<html><head/><body><p>Attempt to download missing book covers from Google books - SLOW</p></body></html>"))
-        self.autoCover.setText(_translate("Dialog", "Download missing covers"))
         self.groupBox_2.setTitle(_translate("Dialog", "Reading"))
         self.hideScrollBars.setToolTip(_translate("Dialog", "Horizontal scrolling with Alt + Scroll\n"
 "Reopen book to see changes"))
