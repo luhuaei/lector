@@ -176,13 +176,6 @@
                 <item>
                  <layout class="QHBoxLayout" name="horizontalLayout_9">
                   <item>
-                   <widget class="QCheckBox" name="autoTags">
-                    <property name="text">
-                     <string>Generate tags from files</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
                    <widget class="QCheckBox" name="attenuateTitles">
                     <property name="text">
                      <string>Shrink long book titles</string>

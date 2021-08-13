@@ -145,8 +145,6 @@ class BookSorter:
         self.work_mode = mode[0]
         self.addition_mode = mode[1]
         self.database_path = database_path
-        self.auto_tags = settings['auto_tags']
-        self.auto_cover = settings['auto_cover']
         self.temp_dir = temp_dir
         if database_path:
             self.database_hashes()
@@ -271,16 +269,12 @@ class BookSorter:
             isbn = metadata.isbn
 
             tags = None
-            if self.auto_tags:
-                tags = metadata.tags
 
             cover_image_raw = metadata.cover
             if cover_image_raw:
                 cover_image = resize_image(cover_image_raw)
             else:
                 cover_image = None
-                if self.auto_cover:
-                    cover_image = fetch_cover(title, author)
 
             this_book[file_md5]['cover_image'] = cover_image
             this_book[file_md5]['addition_mode'] = self.addition_mode

@@ -108,8 +108,6 @@ class Settings:
         # The default is string true because literal eval will convert it anyway
         self.parent.settings['cover_shadows'] = literal_eval(self.settings.value(
             'coverShadows', 'True').capitalize())
-        self.parent.settings['auto_tags'] = literal_eval(self.settings.value(
-            'autoTags', 'True').capitalize())
         self.parent.settings['scan_library'] = literal_eval(self.settings.value(
             'scanLibraryAtStart', 'False').capitalize())
         self.parent.settings['remember_files'] = literal_eval(self.settings.value(
@@ -208,7 +206,6 @@ class Settings:
         self.settings.beginGroup('settingsSwitches')
         self.settings.setValue('rememberFiles', str(current_settings['remember_files']))
         self.settings.setValue('coverShadows', str(current_settings['cover_shadows']))
-        self.settings.setValue('autoTags', str(current_settings['auto_tags']))
         self.settings.setValue('scanLibraryAtStart', str(current_settings['scan_library']))
         self.settings.setValue('performCulling', str(current_settings['perform_culling']))
         self.settings.setValue('dictionaryLanguage', str(current_settings['dictionary_language']))
