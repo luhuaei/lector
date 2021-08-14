@@ -436,13 +436,6 @@ class LibraryToolBar(QtWidgets.QToolBar):
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
 
-        self.searchBar = FixedLineEdit(self)
-        self.searchBar.setClearButtonEnabled(True)
-        self.searchBar.setPlaceholderText(
-            self._translate('LibraryToolBar', 'Search for Title, Author, Tags...'))
-        self.searchBar.setSizePolicy(sizePolicy)
-        self.searchBar.setContentsMargins(0, 0, 10, 0)
-
         # Sorter
         title_string = self._translate('LibraryToolBar', 'Title')
         author_string = self._translate('LibraryToolBar', 'Author')
@@ -466,7 +459,6 @@ class LibraryToolBar(QtWidgets.QToolBar):
 
         # Add widgets
         self.addWidget(spacer)
-        self.addWidget(self.searchBar)
         self.sortingBoxAction = self.addWidget(self.sortingBox)
 
 

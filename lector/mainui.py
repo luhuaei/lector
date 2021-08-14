@@ -157,9 +157,7 @@ class MainUI(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
             lambda: self.show_settings(0))
         self.libraryToolBar.aboutButton.triggered.connect(
             lambda: self.show_settings(3))
-        self.libraryToolBar.searchBar.textChanged.connect(self.lib_ref.update_proxymodels)
         self.libraryToolBar.sortingBox.activated.connect(self.lib_ref.update_proxymodels)
-        self.libraryToolBar.searchBar.textChanged.connect(self.statusbar_visibility)
         self.addToolBar(self.libraryToolBar)
 
         self.stackedWidget.setCurrentIndex(1)
@@ -496,9 +494,6 @@ class MainUI(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
         # in case of addition and reading
         if errors:
             self.display_error_notification(errors)
-        else:
-            if self.libraryToolBar.searchBar.text() == '':
-                self.statusBar.setVisible(False)
 
         self.lib_ref.update_proxymodels()
         self.lib_ref.generate_library_tags()
@@ -530,9 +525,6 @@ class MainUI(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
             if self.settings['show_bars']:
                 self.bookToolBar.hide()
                 self.libraryToolBar.show()
-
-            if self.libraryToolBar.searchBar.text() != '':
-                self.statusBar.setVisible(True)
 
         else:
             if self.settings['show_bars']:
@@ -624,13 +616,6 @@ class MainUI(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
         self.settingsDialog.aboutTabWidget.setCurrentIndex(1)
         self.errorButton.setVisible(False)
         self.statusBar.setVisible(False)
-
-    def statusbar_visibility(self):
-        if self.sender() == self.libraryToolBar.searchBar:
-            if self.libraryToolBar.searchBar.text() == '':
-                self.statusBar.setVisible(False)
-            else:
-                self.statusBar.setVisible(True)
 
     def show_settings(self, stacked_widget_index):
         if not self.settingsDialog.isVisible():
