@@ -209,7 +209,6 @@ class SettingsUI(QtWidgets.QDialog, settingswindow.Ui_Dialog):
                 {'Path': ''},
                 'LIKE')
 
-        self.main_window.generate_library_filter_menu(paths)
         directory_data = {}
         if not paths:
             logger.warning('No book paths saved')
@@ -301,13 +300,9 @@ class SettingsUI(QtWidgets.QDialog, settingswindow.Ui_Dialog):
 
             self.main_window.lib_ref.generate_model('build')
             self.main_window.lib_ref.generate_proxymodels()
-            self.main_window.generate_library_filter_menu()
 
             return
 
-        # Update the main window library filter menu
-        self.main_window.generate_library_filter_menu(data_pairs)
-        self.main_window.set_library_filter()
 
         # Disallow rechecking until the first check completes
         self.okButton.setEnabled(False)

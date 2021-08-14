@@ -414,11 +414,6 @@ class LibraryToolBar(QtWidgets.QToolBar):
             self)
         self.reloadLibraryButton.setObjectName('reloadLibrary')
 
-        self.libraryFilterButton = QtWidgets.QToolButton(self)
-        self.libraryFilterButton.setIcon(image_factory.get_image('view-readermode'))
-        self.libraryFilterButton.setToolTip(
-            self._translate('LibraryToolBar', 'Filter library'))
-
         self.colorButton = QtWidgets.QAction(
             image_factory.get_image('color-picker'),
             self._translate('LibraryToolBar', 'Library background color'),
@@ -440,7 +435,6 @@ class LibraryToolBar(QtWidgets.QToolBar):
         self.addAction(self.deleteButton)
         self.addSeparator()
         self.addAction(self.reloadLibraryButton)
-        self.addWidget(self.libraryFilterButton)
         self.addSeparator()
         self.addAction(self.colorButton)
         self.addAction(self.settingsButton)

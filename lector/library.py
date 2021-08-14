@@ -174,13 +174,6 @@ class Library:
 
     def update_proxymodels(self):
         # Table proxy model
-        self.tableProxyModel.invalidateFilter()
-        self.tableProxyModel.setFilterParams(
-            self.main_window.libraryToolBar.searchBar.text(),
-            self.main_window.active_library_filters,
-            0) # This doesn't need to know the sorting box position
-        self.tableProxyModel.setFilterFixedString(
-            self.main_window.libraryToolBar.searchBar.text())
         # ^^^ This isn't needed, but it forces a model update every time the
         # text in the line edit changes. So I guess it is needed.
         self.tableProxyModel.sort_table_columns(

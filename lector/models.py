@@ -62,7 +62,6 @@ class TableProxyModel(QtCore.QSortFilterProxyModel):
 
         self.temp_dir = temp_dir
         self.filter_text = None
-        self.active_library_filters = None
         self.sorting_box_position = None
         self.role_dictionary = {
             1: QtCore.Qt.UserRole,      # Title
@@ -71,7 +70,6 @@ class TableProxyModel(QtCore.QSortFilterProxyModel):
             4: QtCore.Qt.UserRole + 12, # Last read
             5: QtCore.Qt.UserRole + 7,  # Position percentage
             6: QtCore.Qt.UserRole + 4}  # Tags
-        self.common_functions = ProxyModelsCommonFunctions(self)
 
     def columnCount(self, parent):
         return 7
@@ -133,14 +131,6 @@ class TableProxyModel(QtCore.QSortFilterProxyModel):
         else:
             return QtCore.QVariant()
 
-    def setFilterParams(self, filter_text, active_library_filters, sorting_box_position):
-        self.common_functions.setFilterParams(
-            filter_text, active_library_filters, sorting_box_position)
-
-    def filterAcceptsRow(self, row, parent):
-        output = self.common_functions.filterAcceptsRow(row, parent)
-        return output
-
     def sort_table_columns(self, column=None):
         column = self.tableViewHeader.sortIndicatorSection()
         sorting_order = self.tableViewHeader.sortIndicatorOrder()
@@ -163,57 +153,6 @@ class TableProxyModel(QtCore.QSortFilterProxyModel):
             return f'{m}m'
         else:
             return '<1m'
-
-class ProxyModelsCommonFunctions:
-    def __init__(self, parent_model):
-        self.parent_model = parent_model
-
-    def setFilterParams(self, filter_text, active_library_filters, sorting_box_position):
-        self.parent_model.filter_text = filter_text
-        self.parent_model.active_library_filters = [i.lower() for i in active_library_filters]
-        self.parent_model.sorting_box_position = sorting_box_position
-
-    def filterAcceptsRow(self, row, parent):
-        model = self.parent_model.sourceModel()
-
-        this_index = model.index(row, 0)
-
-        title = model.data(this_index, QtCore.Qt.UserRole)
-        author = model.data(this_index, QtCore.Qt.UserRole + 1)
-        tags = model.data(this_index, QtCore.Qt.UserRole + 4)
-        progress = model.data(this_index, QtCore.Qt.UserRole + 7)
-        directory_name = model.data(this_index, QtCore.Qt.UserRole + 10)
-        directory_tags = model.data(this_index, QtCore.Qt.UserRole + 11)
-        last_accessed = model.data(this_index, QtCore.Qt.UserRole + 12)
-        file_path = model.data(this_index, QtCore.Qt.UserRole + 13)
-
-        # Hide untouched files when sorting by last accessed
-        if self.parent_model.sorting_box_position == 4 and not last_accessed:
-            return False
-
-        # Hide untouched files when sorting by progress
-        if self.parent_model.sorting_box_position == 5 and not progress:
-            return False
-
-        if self.parent_model.active_library_filters:
-            if directory_name not in self.parent_model.active_library_filters:
-                return False
-        else:
-            return False
-
-        if not self.parent_model.filter_text:
-            return True
-        else:
-            valid_data = [
-                i.lower() for i in (
-                    title, author, tags, directory_name,
-                    directory_tags, file_path)
-                if i is not None]
-            for i in valid_data:
-                if self.parent_model.filter_text.lower() in i:
-                    return True
-        return False
-
 
 class MostExcellentFileSystemModel(QtWidgets.QFileSystemModel):
     # Directories are tracked on the basis of their paths

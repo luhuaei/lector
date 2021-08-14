@@ -80,7 +80,6 @@ class MainUI(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
         self.current_profile_index = None
         self.comic_profile = {}
         self.database_path = None
-        self.active_library_filters = []
         self.active_docks = []
 
         # Initialize application
@@ -95,7 +94,6 @@ class MainUI(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
         self.bookToolBar = BookToolBar(self)
 
         # Widget declarations
-        self.libraryFilterMenu = QtWidgets.QMenu()
         self.statusMessage = QtWidgets.QLabel()
 
         # Reference variables
@@ -163,7 +161,6 @@ class MainUI(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
             lambda: self.show_settings(3))
         self.libraryToolBar.searchBar.textChanged.connect(self.lib_ref.update_proxymodels)
         self.libraryToolBar.sortingBox.activated.connect(self.lib_ref.update_proxymodels)
-        self.libraryToolBar.libraryFilterButton.setPopupMode(QtWidgets.QToolButton.InstantPopup)
         self.libraryToolBar.searchBar.textChanged.connect(self.statusbar_visibility)
         self.addToolBar(self.libraryToolBar)
 
@@ -262,7 +259,6 @@ class MainUI(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
         self.lib_ref.generate_model('build')
         self.lib_ref.generate_proxymodels()
         self.lib_ref.generate_library_tags()
-        self.set_library_filter()
 
         # TableView
         self.tableView.doubleClicked.connect(self.library_doubleclick)
@@ -280,9 +276,6 @@ class MainUI(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
         self.tableView.horizontalHeader().sectionClicked.connect(
             self.lib_ref.tableProxyModel.sort_table_columns)
         self.lib_ref.tableProxyModel.sort_table_columns(2)
-        self.tableView.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.tableView.customContextMenuRequested.connect(
-            self.generate_library_context_menu)
 
         # Keyboard shortcuts
         self.ksDistractionFree = QtWidgets.QShortcut(QtGui.QKeySequence('Ctrl+D'), self)
@@ -716,166 +709,6 @@ class MainUI(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
         self.settings['invert_colors'] = self.bookToolBar.invertButton.isChecked()
 
         current_tab.set_content(chapter_number, False)
-
-    def generate_library_context_menu(self, position):
-        index = self.sender().indexAt(position)
-        if not index.isValid():
-            return
-
-        # It's worth remembering that these are indexes of the libraryModel
-        # and NOT of the proxy models
-        selected_indexes = self.get_selection()
-
-        context_menu = QtWidgets.QMenu()
-
-        openAction = context_menu.addAction(
-            self.QImageFactory.get_image('view-readermode'),
-            self._translate('Main_UI', 'Start reading'))
-
-        editAction = None
-        if len(selected_indexes) == 1:
-            editAction = context_menu.addAction(
-                self.QImageFactory.get_image('edit-rename'),
-                self._translate('Main_UI', 'Edit'))
-
-        deleteAction = context_menu.addAction(
-            self.QImageFactory.get_image('trash-empty'),
-            self._translate('Main_UI', 'Delete'))
-        readAction = context_menu.addAction(
-            QtGui.QIcon(':/images/checkmark.svg'),
-            self._translate('Main_UI', 'Mark read'))
-        unreadAction = context_menu.addAction(
-            QtGui.QIcon(':/images/xmark.svg'),
-            self._translate('Main_UI', 'Mark unread'))
-
-        action = context_menu.exec_(self.sender().mapToGlobal(position))
-
-        if action == openAction:
-            books_to_open = {}
-            for i in selected_indexes:
-                metadata = self.lib_ref.libraryModel.data(i, QtCore.Qt.UserRole + 3)
-                books_to_open[metadata['path']] = metadata['hash']
-
-            self.open_files(books_to_open)
-
-        if action == editAction:
-            edit_book = selected_indexes[0]
-            is_cover_loaded = self.lib_ref.libraryModel.data(
-                edit_book, QtCore.Qt.UserRole + 8)
-
-            cover = self.lib_ref.libraryModel.item(
-                edit_book.row()).icon()
-            title = self.lib_ref.libraryModel.data(
-                edit_book, QtCore.Qt.UserRole)
-            author = self.lib_ref.libraryModel.data(
-                edit_book, QtCore.Qt.UserRole + 1)
-            year = str(self.lib_ref.libraryModel.data(
-                edit_book, QtCore.Qt.UserRole + 2))  # Text cannot be int
-            tags = self.lib_ref.libraryModel.data(
-                edit_book, QtCore.Qt.UserRole + 4)
-
-            self.metadataDialog.load_book(
-                cover, title, author, year, tags, edit_book)
-            self.metadataDialog.show()
-
-        if action == deleteAction:
-            self.delete_books(selected_indexes)
-
-        if action == readAction or action == unreadAction:
-            for i in selected_indexes:
-                metadata = self.lib_ref.libraryModel.data(i, QtCore.Qt.UserRole + 3)
-                book_hash = self.lib_ref.libraryModel.data(i, QtCore.Qt.UserRole + 6)
-                position = metadata['position']
-
-                if position:
-                    if action == readAction:
-                        position['is_read'] = True
-                        position['scroll_value'] = 1
-                    elif action == unreadAction:
-                        position['is_read'] = False
-                        position['current_chapter'] = 1
-                        position['scroll_value'] = 0
-                else:
-                    position = {}
-                    if action == readAction:
-                        position['is_read'] = True
-
-                metadata['position'] = position
-
-                position_perc = None
-                last_accessed_time = None
-                if action == readAction:
-                    last_accessed_time = QtCore.QDateTime().currentDateTime()
-                    position_perc = 1
-
-                self.lib_ref.libraryModel.setData(
-                    i, metadata, QtCore.Qt.UserRole + 3)
-                self.lib_ref.libraryModel.setData(
-                    i, position_perc, QtCore.Qt.UserRole + 7)
-                self.lib_ref.libraryModel.setData(
-                    i, last_accessed_time, QtCore.Qt.UserRole + 12)
-                self.lib_ref.update_proxymodels()
-
-                database_dict = {
-                    'Position': position,
-                    'LastAccessed': last_accessed_time}
-
-                database.DatabaseFunctions(
-                    self.database_path).modify_metadata(database_dict, book_hash)
-
-    def generate_library_filter_menu(self, directory_list=None):
-        self.libraryFilterMenu.clear()
-
-        def generate_name(path_data):
-            this_filter = path_data[1]
-            if not this_filter:
-                this_filter = os.path.basename(
-                    path_data[0]).title()
-            return this_filter
-
-        filter_actions = []
-        filter_list = []
-        if directory_list:
-            checked = [i for i in directory_list if i[3] == QtCore.Qt.Checked]
-            filter_list = list(map(generate_name, checked))
-            filter_list.sort()
-
-        filter_list.append(self._translate('Main_UI', 'Manually Added'))
-        filter_actions = [QtWidgets.QAction(i, self.libraryFilterMenu) for i in filter_list]
-
-        filter_all = QtWidgets.QAction('All', self.libraryFilterMenu)
-        filter_actions.append(filter_all)
-
-        for i in filter_actions:
-            i.setCheckable(True)
-            i.setChecked(True)
-            i.triggered.connect(self.set_library_filter)
-
-        self.libraryFilterMenu.addActions(filter_actions)
-        self.libraryFilterMenu.insertSeparator(filter_all)
-        self.libraryToolBar.libraryFilterButton.setMenu(self.libraryFilterMenu)
-
-    def set_library_filter(self, event=None):
-        self.active_library_filters = []
-        something_was_unchecked = False
-
-        if self.sender():  # Program startup sends a None here
-            if self.sender().objectName() == 'All':
-                for i in self.libraryFilterMenu.actions():
-                    i.setChecked(self.sender().isChecked())
-
-        for i in self.libraryFilterMenu.actions()[:-2]:
-            if i.isChecked():
-                self.active_library_filters.append(i.text())
-            else:
-                something_was_unchecked = True
-
-        if something_was_unchecked:
-            self.libraryFilterMenu.actions()[-1].setChecked(False)
-        else:
-            self.libraryFilterMenu.actions()[-1].setChecked(True)
-
-        self.lib_ref.update_proxymodels()
 
     def toggle_distraction_free(self):
         self.settings['show_bars'] = not self.settings['show_bars']
