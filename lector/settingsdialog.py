@@ -95,7 +95,6 @@ class SettingsUI(QtWidgets.QDialog, settingswindow.Ui_Dialog):
         self.lightIconsRadio.clicked.connect(self.change_icon_theme)
 
         # Check boxes
-        self.coverShadows.setChecked(self.main_window.settings['cover_shadows'])
         self.refreshLibrary.setChecked(self.main_window.settings['scan_library'])
         self.fileRemember.setChecked(self.main_window.settings['remember_files'])
         self.cachingEnabled.setChecked(self.main_window.settings['caching_enabled'])
@@ -105,7 +104,6 @@ class SettingsUI(QtWidgets.QDialog, settingswindow.Ui_Dialog):
         self.smallIncrementBox.setValue(self.main_window.settings['small_increment'])
         self.largeIncrementBox.setValue(self.main_window.settings['large_increment'])
 
-        self.coverShadows.clicked.connect(self.manage_checkboxes)
         self.refreshLibrary.clicked.connect(self.manage_checkboxes)
         self.fileRemember.clicked.connect(self.manage_checkboxes)
         self.cachingEnabled.clicked.connect(self.manage_checkboxes)
@@ -405,7 +403,6 @@ class SettingsUI(QtWidgets.QDialog, settingswindow.Ui_Dialog):
         sender = self.sender().objectName()
 
         sender_dict = {
-            'coverShadows': 'cover_shadows',
             'refreshLibrary': 'scan_library',
             'fileRemember': 'remember_files',
             'cachingEnabled': 'caching_enabled',

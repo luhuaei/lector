@@ -103,9 +103,6 @@ class Settings:
         self.settings.endGroup()
 
         self.settings.beginGroup('settingsSwitches')
-        # The default is string true because literal eval will convert it anyway
-        self.parent.settings['cover_shadows'] = literal_eval(self.settings.value(
-            'coverShadows', 'True').capitalize())
         self.parent.settings['scan_library'] = literal_eval(self.settings.value(
             'scanLibraryAtStart', 'False').capitalize())
         self.parent.settings['remember_files'] = literal_eval(self.settings.value(
@@ -195,7 +192,6 @@ class Settings:
 
         self.settings.beginGroup('settingsSwitches')
         self.settings.setValue('rememberFiles', str(current_settings['remember_files']))
-        self.settings.setValue('coverShadows', str(current_settings['cover_shadows']))
         self.settings.setValue('scanLibraryAtStart', str(current_settings['scan_library']))
         self.settings.setValue('dictionaryLanguage', str(current_settings['dictionary_language']))
         self.settings.setValue('cachingEnabled', str(current_settings['caching_enabled']))
