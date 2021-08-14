@@ -84,9 +84,6 @@ class Ui_Dialog(object):
         self.verticalLayout_2.addLayout(self.horizontalLayout_13)
         self.horizontalLayout_4 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_4.setObjectName("horizontalLayout_4")
-        self.refreshLibrary = QtWidgets.QCheckBox(self.groupBox)
-        self.refreshLibrary.setObjectName("refreshLibrary")
-        self.horizontalLayout_4.addWidget(self.refreshLibrary)
         self.fileRemember = QtWidgets.QCheckBox(self.groupBox)
         self.fileRemember.setObjectName("fileRemember")
         self.horizontalLayout_4.addWidget(self.fileRemember)
@@ -354,7 +351,6 @@ class Ui_Dialog(object):
         self.darkIconsRadio.setText(_translate("Dialog", "&Dark"))
         self.lightIconsRadio.setToolTip(_translate("Dialog", "Restart application to see changes"))
         self.lightIconsRadio.setText(_translate("Dialog", "L&ight"))
-        self.refreshLibrary.setText(_translate("Dialog", "Startup: Refresh library"))
         self.fileRemember.setText(_translate("Dialog", "Remember open files"))
         self.attenuateTitles.setText(_translate("Dialog", "Shrink long book titles"))
         self.groupBox_2.setTitle(_translate("Dialog", "Reading"))
@@ -377,7 +373,6 @@ class Ui_Dialog(object):
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.imageTab), _translate("Dialog", "Image"))
         self.aboutTabWidget.setTabText(self.aboutTabWidget.indexOf(self.aboutTab), _translate("Dialog", "About"))
         self.resetButton.setText(_translate("Dialog", "Reset Application"))
-        self.okButton.setText(_translate("Dialog", "Scan Library"))
         self.cancelButton.setText(_translate("Dialog", "Close"))
 
 

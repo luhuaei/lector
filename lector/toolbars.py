@@ -408,12 +408,6 @@ class LibraryToolBar(QtWidgets.QToolBar):
             self._translate('LibraryToolBar', 'Delete book'),
             self)
 
-        self.reloadLibraryButton = QtWidgets.QAction(
-            image_factory.get_image('reload'),
-            self._translate('LibraryToolBar', 'Scan Library'),
-            self)
-        self.reloadLibraryButton.setObjectName('reloadLibrary')
-
         self.colorButton = QtWidgets.QAction(
             image_factory.get_image('color-picker'),
             self._translate('LibraryToolBar', 'Library background color'),
@@ -433,8 +427,6 @@ class LibraryToolBar(QtWidgets.QToolBar):
         # Add buttons
         self.addAction(self.addButton)
         self.addAction(self.deleteButton)
-        self.addSeparator()
-        self.addAction(self.reloadLibraryButton)
         self.addSeparator()
         self.addAction(self.colorButton)
         self.addAction(self.settingsButton)

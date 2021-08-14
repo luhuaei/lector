@@ -80,10 +80,6 @@ class SettingsUI(QtWidgets.QDialog, settingswindow.Ui_Dialog):
         else:
             self.languageBox.setCurrentIndex(2)
         self.languageBox.activated.connect(self.change_dictionary_language)
-
-        self.okButton.setToolTip(
-            self._translate('SettingsUI', 'Save changes and start library scan'))
-        self.okButton.clicked.connect(self.start_library_scan)
         self.cancelButton.clicked.connect(self.cancel_pressed)
 
         # Radio buttons
@@ -95,7 +91,6 @@ class SettingsUI(QtWidgets.QDialog, settingswindow.Ui_Dialog):
         self.lightIconsRadio.clicked.connect(self.change_icon_theme)
 
         # Check boxes
-        self.refreshLibrary.setChecked(self.main_window.settings['scan_library'])
         self.fileRemember.setChecked(self.main_window.settings['remember_files'])
         self.cachingEnabled.setChecked(self.main_window.settings['caching_enabled'])
         self.attenuateTitles.setChecked(self.main_window.settings['attenuate_titles'])
@@ -104,7 +99,6 @@ class SettingsUI(QtWidgets.QDialog, settingswindow.Ui_Dialog):
         self.smallIncrementBox.setValue(self.main_window.settings['small_increment'])
         self.largeIncrementBox.setValue(self.main_window.settings['large_increment'])
 
-        self.refreshLibrary.clicked.connect(self.manage_checkboxes)
         self.fileRemember.clicked.connect(self.manage_checkboxes)
         self.cachingEnabled.clicked.connect(self.manage_checkboxes)
         self.attenuateTitles.clicked.connect(self.manage_checkboxes)
@@ -286,14 +280,6 @@ class SettingsUI(QtWidgets.QDialog, settingswindow.Ui_Dialog):
 
         if not data_pairs:
             logger.error('Can\'t scan - No book paths saved')
-            try:
-                if self.sender().objectName() == 'reloadLibrary':
-                    self.show()
-                    treeViewIndex = self.listModel.index(0, 0)
-                    self.listView.setCurrentIndex(treeViewIndex)
-                    return
-            except AttributeError:
-                pass
 
             database.DatabaseFunctions(
                 self.database_path).delete_from_database('*', '*')
@@ -303,12 +289,6 @@ class SettingsUI(QtWidgets.QDialog, settingswindow.Ui_Dialog):
 
             return
 
-
-        # Disallow rechecking until the first check completes
-        self.okButton.setEnabled(False)
-        self.main_window.libraryToolBar.reloadLibraryButton.setEnabled(False)
-        self.okButton.setToolTip(
-            self._translate('SettingsUI', 'Library scan in progress...'))
 
         # Traverse directories looking for files
         self.main_window.statusMessage.setText(
@@ -398,7 +378,6 @@ class SettingsUI(QtWidgets.QDialog, settingswindow.Ui_Dialog):
         sender = self.sender().objectName()
 
         sender_dict = {
-            'refreshLibrary': 'scan_library',
             'fileRemember': 'remember_files',
             'cachingEnabled': 'caching_enabled',
             'attenuateTitles': 'attenuate_titles'}

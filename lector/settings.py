@@ -103,8 +103,6 @@ class Settings:
         self.settings.endGroup()
 
         self.settings.beginGroup('settingsSwitches')
-        self.parent.settings['scan_library'] = literal_eval(self.settings.value(
-            'scanLibraryAtStart', 'False').capitalize())
         self.parent.settings['remember_files'] = literal_eval(self.settings.value(
             'rememberFiles', 'True').capitalize())
         self.parent.settings['dictionary_language'] = self.settings.value(
@@ -192,7 +190,6 @@ class Settings:
 
         self.settings.beginGroup('settingsSwitches')
         self.settings.setValue('rememberFiles', str(current_settings['remember_files']))
-        self.settings.setValue('scanLibraryAtStart', str(current_settings['scan_library']))
         self.settings.setValue('dictionaryLanguage', str(current_settings['dictionary_language']))
         self.settings.setValue('cachingEnabled', str(current_settings['caching_enabled']))
         self.settings.setValue('attenuateTitles', str(current_settings['attenuate_titles']))

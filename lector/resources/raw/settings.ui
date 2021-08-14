@@ -137,13 +137,6 @@
                 <item>
                  <layout class="QHBoxLayout" name="horizontalLayout_4">
                   <item>
-                   <widget class="QCheckBox" name="refreshLibrary">
-                    <property name="text">
-                     <string>Startup: Refresh library</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
                    <widget class="QCheckBox" name="fileRemember">
                     <property name="text">
                      <string>Remember open files</string>
@@ -694,13 +687,6 @@
           </size>
          </property>
         </spacer>
-       </item>
-       <item>
-        <widget class="QPushButton" name="okButton">
-         <property name="text">
-          <string>Scan Library</string>
-         </property>
-        </widget>
        </item>
        <item>
         <widget class="QPushButton" name="cancelButton">

@@ -152,8 +152,6 @@ class MainUI(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
         # Library toolbar
         self.libraryToolBar.addButton.triggered.connect(self.add_books)
         self.libraryToolBar.deleteButton.triggered.connect(self.delete_books)
-        self.libraryToolBar.reloadLibraryButton.triggered.connect(
-            self.settingsDialog.start_library_scan)
         self.libraryToolBar.colorButton.triggered.connect(self.get_color)
         self.libraryToolBar.settingsButton.triggered.connect(
             lambda: self.show_settings(0))
@@ -300,10 +298,6 @@ class MainUI(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
 
         self.open_books_at_startup()
 
-        # Scan the library @ startup
-        if self.settings['scan_library']:
-            self.settingsDialog.start_library_scan()
-
     def open_books_at_startup(self):
         # Last open books and command line books aren't being opened together
         # so that command line books are processed last and therefore retain focus
@@ -426,7 +420,6 @@ class MainUI(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
             return
 
         self.settingsDialog.okButton.setEnabled(False)
-        self.libraryToolBar.reloadLibraryButton.setEnabled(False)
 
         self.settings['last_open_path'] = os.path.dirname(opened_files[0][0])
         self.statusBar.setVisible(True)
@@ -496,10 +489,6 @@ class MainUI(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
 
     def move_on(self, errors=None):
         self.settingsDialog.okButton.setEnabled(True)
-        self.settingsDialog.okButton.setToolTip(
-            self._translate('Main_UI', 'Save changes and start library scan'))
-        self.libraryToolBar.reloadLibraryButton.setEnabled(True)
-
         self.sorterProgress.setVisible(False)
         self.sorterProgress.setValue(0)
 
