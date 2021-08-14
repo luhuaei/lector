@@ -125,16 +125,10 @@ class Tab(QtWidgets.QWidget):
         self.contentView.verticalScrollBar().setSingleStep(
             self.main_window.settings['scroll_speed'])
 
-        if self.main_window.settings['hide_scrollbars']:
-            self.contentView.setHorizontalScrollBarPolicy(
-                QtCore.Qt.ScrollBarAlwaysOff)
-            self.contentView.setVerticalScrollBarPolicy(
-                QtCore.Qt.ScrollBarAlwaysOff)
-        else:
-            self.contentView.setHorizontalScrollBarPolicy(
-                QtCore.Qt.ScrollBarAsNeeded)
-            self.contentView.setVerticalScrollBarPolicy(
-                QtCore.Qt.ScrollBarAsNeeded)
+        self.contentView.setHorizontalScrollBarPolicy(
+            QtCore.Qt.ScrollBarAlwaysOff)
+        self.contentView.setVerticalScrollBarPolicy(
+            QtCore.Qt.ScrollBarAlwaysOff)
 
         # Create a common dock for bookmarks, annotations, and search
         self.sideDock = PliantDockWidget(

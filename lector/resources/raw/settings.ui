@@ -190,17 +190,6 @@
                 <item>
                  <layout class="QHBoxLayout" name="horizontalLayout_6">
                   <item>
-                   <widget class="QCheckBox" name="hideScrollBars">
-                    <property name="toolTip">
-                     <string>Horizontal scrolling with Alt + Scroll
-Reopen book to see changes</string>
-                    </property>
-                    <property name="text">
-                     <string>Hide scrollbars when reading</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
                    <widget class="QCheckBox" name="cachingEnabled">
                     <property name="toolTip">
                      <string>Greatly reduces page transition time at the cost of more memory</string>

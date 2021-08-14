@@ -114,8 +114,6 @@ class Settings:
             'dictionaryLanguage', 'en')
         self.parent.settings['caching_enabled'] = literal_eval(self.settings.value(
             'cachingEnabled', 'True').capitalize())
-        self.parent.settings['hide_scrollbars'] = literal_eval(self.settings.value(
-            'hideScrollBars', 'False').capitalize())
         self.parent.settings['scroll_speed'] = int(self.settings.value('scrollSpeed', 7))
         self.parent.settings['consider_read_at'] = int(self.settings.value('considerReadAt', 95))
         self.parent.settings['small_increment'] = int(self.settings.value('smallIncrement', 4))
@@ -201,7 +199,6 @@ class Settings:
         self.settings.setValue('scanLibraryAtStart', str(current_settings['scan_library']))
         self.settings.setValue('dictionaryLanguage', str(current_settings['dictionary_language']))
         self.settings.setValue('cachingEnabled', str(current_settings['caching_enabled']))
-        self.settings.setValue('hideScrollBars', str(current_settings['hide_scrollbars']))
         self.settings.setValue('attenuateTitles', str(current_settings['attenuate_titles']))
         self.settings.setValue('scrollSpeed', current_settings['scroll_speed'])
         self.settings.setValue('considerReadAt', current_settings['consider_read_at'])
