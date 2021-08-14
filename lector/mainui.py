@@ -49,7 +49,6 @@ from app.lector.lector.guifunctions import QImageFactory, ViewProfileModificatio
 from app.lector.lector.settings import Settings
 from app.lector.lector.settingsdialog import SettingsUI
 from app.lector.lector.metadatadialog import MetadataUI
-from app.lector.lector.definitionsdialog import DefinitionsUI
 from app.lector.lector.resources import mainwindow, resources
 
 
@@ -111,9 +110,6 @@ class MainUI(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
 
         # Initialize metadata dialog
         self.metadataDialog = MetadataUI(self)
-
-        # Initialize definition view dialog
-        self.definitionDialog = DefinitionsUI(self)
 
         # Make the statusbar invisible by default
         self.statusBar.setVisible(False)
@@ -709,7 +705,6 @@ class MainUI(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
         self.hide()
         self.metadataDialog.hide()
         self.settingsDialog.hide()
-        self.definitionDialog.hide()
         self.temp_dir.remove()
         for this_dock in self.active_docks:
             try:

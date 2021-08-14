@@ -751,7 +751,7 @@ class PliantQTextBrowser(QtWidgets.QTextBrowser):
 
         # The following cannot be None because a click
         # outside the menu means that the action variable is None.
-        defineAction = fsToggleAction = dfToggleAction = 'Caesar si viveret, ad remum dareris'
+        fsToggleAction = dfToggleAction = 'Caesar si viveret, ad remum dareris'
         searchWikipediaAction = searchYoutubeAction = 'Does anyone know something funny in Latin?'
         searchAction = searchGoogleAction = bookmarksToggleAction = 'TODO Insert Latin Joke'
         deleteAnnotationAction = editAnnotationNoteAction = 'Latin quote 2. Electric Boogaloo.'
@@ -791,11 +791,6 @@ class PliantQTextBrowser(QtWidgets.QTextBrowser):
             elided_selection = selection
             if len(elided_selection) > 15:
                 elided_selection = elided_selection[:15] + '...'
-
-            define_string = self._translate('PliantQTextBrowser', 'Define')
-            defineAction = contextMenu.addAction(
-                self.main_window.QImageFactory.get_image('view-readermode'),
-                f'{define_string} "{first_selected_word}"')
 
             search_submenu_string = self._translate('PliantQTextBrowser', 'Search for')
             searchSubMenu = contextMenu.addMenu(
@@ -876,9 +871,6 @@ class PliantQTextBrowser(QtWidgets.QTextBrowser):
 
         if action == addBookMarkAction:
             self.parent.sideDock.bookmarks.add_bookmark(cursor_at_mouse.position())
-
-        if action == defineAction:
-            self.main_window.definitionDialog.find_definition(selection)
 
         if action == searchAction:
             if selection and selection != '':
