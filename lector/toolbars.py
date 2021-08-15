@@ -399,15 +399,6 @@ class LibraryToolBar(QtWidgets.QToolBar):
         image_factory = self.window().QImageFactory
 
         # Buttons
-        self.addButton = QtWidgets.QAction(
-            image_factory.get_image('add'),
-            self._translate('LibraryToolBar', 'Add book'),
-            self)
-        self.deleteButton = QtWidgets.QAction(
-            image_factory.get_image('remove'),
-            self._translate('LibraryToolBar', 'Delete book'),
-            self)
-
         self.colorButton = QtWidgets.QAction(
             image_factory.get_image('color-picker'),
             self._translate('LibraryToolBar', 'Library background color'),
@@ -425,9 +416,6 @@ class LibraryToolBar(QtWidgets.QToolBar):
             self)
 
         # Add buttons
-        self.addAction(self.addButton)
-        self.addAction(self.deleteButton)
-        self.addSeparator()
         self.addAction(self.colorButton)
         self.addAction(self.settingsButton)
         self.addAction(self.aboutButton)

@@ -143,8 +143,6 @@ class MainUI(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
         self.settings['show_bars'] = True
 
         # Library toolbar
-        self.libraryToolBar.addButton.triggered.connect(self.add_books)
-        self.libraryToolBar.deleteButton.triggered.connect(self.delete_books)
         self.libraryToolBar.colorButton.triggered.connect(self.get_color)
         self.libraryToolBar.settingsButton.triggered.connect(
             lambda: self.show_settings(0))
@@ -254,10 +252,6 @@ class MainUI(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
         self.ksDistractionFree.setContext(QtCore.Qt.ApplicationShortcut)
         self.ksDistractionFree.activated.connect(self.toggle_distraction_free)
 
-        self.ksOpenFile = QtWidgets.QShortcut(QtGui.QKeySequence('Ctrl+O'), self)
-        self.ksOpenFile.setContext(QtCore.Qt.ApplicationShortcut)
-        self.ksOpenFile.activated.connect(self.add_books)
-
         self.ksExitAll = QtWidgets.QShortcut(QtGui.QKeySequence('Ctrl+Q'), self)
         self.ksExitAll.setContext(QtCore.Qt.ApplicationShortcut)
         self.ksExitAll.activated.connect(self.closeEvent)
@@ -265,10 +259,6 @@ class MainUI(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
         self.ksCloseTab = QtWidgets.QShortcut(QtGui.QKeySequence('Ctrl+W'), self)
         self.ksCloseTab.setContext(QtCore.Qt.ApplicationShortcut)
         self.ksCloseTab.activated.connect(self.tab_close)
-
-        self.ksDeletePressed = QtWidgets.QShortcut(QtGui.QKeySequence('Delete'), self)
-        self.ksDeletePressed.setContext(QtCore.Qt.ApplicationShortcut)
-        self.ksDeletePressed.activated.connect(self.delete_pressed)
 
         self.open_books_at_startup()
 
@@ -383,80 +373,6 @@ class MainUI(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
 
         self.tabWidget.setCurrentIndex(self.tabWidget.count() - 1)
 
-    def add_books(self):
-        dialog_prompt = self._translate('Main_UI', 'Add books to database')
-        ebooks_string = self._translate('Main_UI', 'eBooks')
-        opened_files = QtWidgets.QFileDialog.getOpenFileNames(
-            self, dialog_prompt, self.settings['last_open_path'],
-            f'{ebooks_string}({self.available_parsers})')
-
-        if not opened_files[0]:
-            return
-
-        self.settingsDialog.okButton.setEnabled(False)
-
-        self.settings['last_open_path'] = os.path.dirname(opened_files[0][0])
-        self.statusBar.setVisible(True)
-        self.sorterProgress.setVisible(True)
-        self.statusMessage.setText(self._translate('Main_UI', 'Adding books...'))
-        self.thread = BackGroundBookAddition(
-            opened_files[0], self.database_path, 'manual', self)
-        self.thread.finished.connect(
-            lambda: self.move_on(self.thread.errors))
-        self.thread.start()
-
-    def get_selection(self):
-        selected_indexes = None
-
-        return []
-
-    def delete_books(self, selected_indexes=None):
-        # Get a list of QItemSelection objects
-        # What we're interested in is the indexes()[0] in each of them
-        # That gives a list of indexes from the view model
-        selected_indexes = self.get_selection()
-        if not selected_indexes:
-            return
-
-        # Deal with message box selection
-        def ifcontinue(box_button):
-            if box_button.text() != '&Yes':
-                return
-
-            # Persistent model indexes are required beause deletion mutates the model
-            # Generate and delete by persistent index
-            delete_hashes = [
-                self.lib_ref.libraryModel.data(
-                    i, QtCore.Qt.UserRole + 6) for i in selected_indexes]
-            persistent_indexes = [
-                QtCore.QPersistentModelIndex(i) for i in selected_indexes]
-
-            for i in persistent_indexes:
-                self.lib_ref.libraryModel.removeRow(i.row())
-
-            # Update the database in the background
-            self.thread = BackGroundBookDeletion(
-                delete_hashes, self.database_path)
-            self.thread.finished.connect(self.move_on)
-            self.thread.start()
-
-        # Generate a message box to confirm deletion
-        confirm_deletion = QtWidgets.QMessageBox()
-        deletion_prompt = self._translate(
-            'Main_UI', f'Delete book(s)?')
-        confirm_deletion.setText(deletion_prompt)
-        confirm_deletion.setIcon(QtWidgets.QMessageBox.Question)
-        confirm_deletion.setWindowTitle(self._translate('Main_UI', 'Confirm deletion'))
-        confirm_deletion.setStandardButtons(
-            QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
-        confirm_deletion.buttonClicked.connect(ifcontinue)
-        confirm_deletion.show()
-        confirm_deletion.exec_()
-
-    def delete_pressed(self):
-        if self.tabWidget.currentIndex() == 0:
-            self.delete_books()
-
     def move_on(self, errors=None):
         self.settingsDialog.okButton.setEnabled(True)
         self.sorterProgress.setVisible(False)
@@ -563,9 +479,6 @@ class MainUI(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
         # It's going to do position tracking
         current_tab = self.tabWidget.currentWidget()
         current_tab.set_content(required_position, True, True)
-
-    def library_doubleclick(self, index):
-        pass
 
     def display_error_notification(self, errors):
         self.statusBar.setVisible(True)
