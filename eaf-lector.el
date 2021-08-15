@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t; -*-
 
 (defcustom eaf-lector-extension-list
-  '("epub")
+  '("epub" "pdf" "mobi")
   "The extension list of epub application."
   :type 'cons)
 
