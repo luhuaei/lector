@@ -70,7 +70,7 @@ class Settings:
         self.parent.resize(self.settings.value('windowSize', QtCore.QSize(1299, 748)))
         self.parent.move(self.settings.value('windowPosition', QtCore.QPoint(0, 0)))
         self.parent.settings['current_view'] = int(self.settings.value('currentView', 0))
-        self.parent.settings['main_window_headers'] = self.settings.value('tableHeaders', None)
+        self.parent.settings['main_window_headers'] = None
         self.parent.settings['icon_theme'] = self.settings.value('iconTheme', 'DarkIcons')
         self.settings.endGroup()
 
@@ -98,8 +98,7 @@ class Settings:
             'windowSize', QtCore.QSize(700, 500))
         self.parent.settings['settings_dialog_position'] = self.settings.value(
             'windowPosition', QtCore.QPoint(0, 0))
-        self.parent.settings['settings_dialog_headers'] = self.settings.value(
-            'tableHeaders', [200, 150])
+        self.parent.settings['settings_dialog_headers'] = [200, 150]
         self.settings.endGroup()
 
         self.settings.beginGroup('settingsSwitches')
@@ -145,11 +144,6 @@ class Settings:
         self.settings.setValue('windowPosition', self.parent.pos())
         self.settings.setValue('currentView', self.parent.stackedWidget.currentIndex())
         self.settings.setValue('iconTheme', self.parent.settings['icon_theme'])
-
-        table_headers = []
-        for i in range(7):
-            table_headers.append(self.parent.tableView.horizontalHeader().sectionSize(i))
-        self.settings.setValue('tableHeaders', table_headers)
         self.settings.endGroup()
 
         self.settings.beginGroup('runtimeVariables')
@@ -185,7 +179,6 @@ class Settings:
         self.settings.beginGroup('settingsWindow')
         self.settings.setValue('windowSize', current_settings['settings_dialog_size'])
         self.settings.setValue('windowPosition', current_settings['settings_dialog_position'])
-        self.settings.setValue('tableHeaders', current_settings['settings_dialog_headers'])
         self.settings.endGroup()
 
         self.settings.beginGroup('settingsSwitches')

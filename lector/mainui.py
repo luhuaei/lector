@@ -41,7 +41,7 @@ logger.log(60, f'Lector {VERSION} - Application started')
 from app.lector.lector import database
 from app.lector.lector import sorter
 from app.lector.lector.toolbars import LibraryToolBar, BookToolBar
-from app.lector.lector.widgets import Tab, DragDropTableView
+from app.lector.lector.widgets import Tab
 from app.lector.lector.delegates import LibraryDelegate
 from app.lector.lector.threaded import BackGroundTabUpdate, BackGroundBookAddition, BackGroundBookDeletion
 from app.lector.lector.library import Library
@@ -67,9 +67,6 @@ class MainUI(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
 
         # Initialize translation function
         self._translate = QtCore.QCoreApplication.translate
-
-        self.tableView = DragDropTableView(self, self.tablePage)
-        self.gridLayout_3.addWidget(self.tableView, 0, 0, 1, 1)
 
         # Empty variables that will be infested soon
         self.settings = {}
@@ -252,23 +249,6 @@ class MainUI(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
         self.lib_ref.generate_proxymodels()
         self.lib_ref.generate_library_tags()
 
-        # TableView
-        self.tableView.doubleClicked.connect(self.library_doubleclick)
-        self.tableView.horizontalHeader().setSectionResizeMode(
-            QtWidgets.QHeaderView.Interactive)
-        self.tableView.horizontalHeader().setSortIndicator(
-            2, QtCore.Qt.AscendingOrder)
-        self.tableView.setColumnHidden(0, True)
-        self.tableView.horizontalHeader().setHighlightSections(False)
-        if self.settings['main_window_headers']:
-            for count, i in enumerate(self.settings['main_window_headers']):
-                self.tableView.horizontalHeader().resizeSection(count, int(i))
-        self.tableView.horizontalHeader().resizeSection(5, 30)
-        self.tableView.horizontalHeader().setStretchLastSection(True)
-        self.tableView.horizontalHeader().sectionClicked.connect(
-            self.lib_ref.tableProxyModel.sort_table_columns)
-        self.lib_ref.tableProxyModel.sort_table_columns(2)
-
         # Keyboard shortcuts
         self.ksDistractionFree = QtWidgets.QShortcut(QtGui.QKeySequence('Ctrl+D'), self)
         self.ksDistractionFree.setContext(QtCore.Qt.ApplicationShortcut)
@@ -428,11 +408,7 @@ class MainUI(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
     def get_selection(self):
         selected_indexes = None
 
-        selected_books = self.tableView.selectionModel().selectedRows()
-        selected_indexes = [
-            self.lib_ref.tableProxyModel.mapToSource(i) for i in selected_books]
-
-        return selected_indexes
+        return []
 
     def delete_books(self, selected_indexes=None):
         # Get a list of QItemSelection objects
@@ -589,15 +565,7 @@ class MainUI(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
         current_tab.set_content(required_position, True, True)
 
     def library_doubleclick(self, index):
-        sender = self.sender().objectName()
-
-        source_index = self.lib_ref.tableProxyModel.mapToSource(index)
-
-        item = self.lib_ref.libraryModel.item(source_index.row(), 0)
-        metadata = item.data(QtCore.Qt.UserRole + 3)
-        path = {metadata['path']: metadata['hash']}
-
-        self.open_files(path)
+        pass
 
     def display_error_notification(self, errors):
         self.statusBar.setVisible(True)

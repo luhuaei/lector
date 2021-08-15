@@ -567,48 +567,6 @@ class Tab(QtWidgets.QWidget):
         self.contentView.hide()
         self.main_window.closeEvent()
 
-class DragDropTableView(QtWidgets.QTableView):
-    # This is the library tableview
-    def __init__(self, main_window, parent):
-        super(DragDropTableView, self).__init__(parent)
-        self.main_window = main_window
-        self.setAcceptDrops(True)
-        self.setDragDropMode(QtWidgets.QAbstractItemView.InternalMove)
-        self.setFrameShape(QtWidgets.QFrame.Box)
-        self.setFrameShadow(QtWidgets.QFrame.Plain)
-        self.setSizeAdjustPolicy(
-            QtWidgets.QAbstractScrollArea.AdjustToContentsOnFirstShow)
-        self.setEditTriggers(
-            QtWidgets.QAbstractItemView.DoubleClicked |
-            QtWidgets.QAbstractItemView.EditKeyPressed |
-            QtWidgets.QAbstractItemView.SelectedClicked)
-        self.setAlternatingRowColors(True)
-        self.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
-        self.setGridStyle(QtCore.Qt.NoPen)
-        self.setSortingEnabled(True)
-        self.setWordWrap(False)
-        self.setObjectName("tableView")
-        self.horizontalHeader().setVisible(True)
-        self.verticalHeader().setVisible(False)
-
-    def dragEnterEvent(self, event):
-        if event.mimeData().hasUrls():
-            event.acceptProposedAction()
-        else:
-            super(DragDropTableView, self).dragEnterEvent(event)
-
-    def dragMoveEvent(self, event):
-        super(DragDropTableView, self).dragMoveEvent(event)
-
-    def dropEvent(self, event):
-        if event.mimeData().hasUrls():
-            file_list = [url.path() for url in event.mimeData().urls()]
-            self.main_window.process_post_hoc_files(file_list, False)
-            event.acceptProposedAction()
-        else:
-            super(DragDropTableView, self).dropEvent(event)
-
-
 class SaysHelloWhenClicked(QtWidgets.QListView):
     # Signal declarations must be outside the constructor
     # The argument is the type of the data emitted

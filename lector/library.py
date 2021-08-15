@@ -22,7 +22,6 @@ import pathlib
 from PyQt5 import QtGui, QtCore
 
 from app.lector.lector import database
-from app.lector.lector.models import TableProxyModel
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +30,6 @@ class Library:
     def __init__(self, parent):
         self.main_window = parent
         self.libraryModel = None
-        self.tableProxyModel = None
         self._translate = QtCore.QCoreApplication.translate
 
     def generate_model(self, mode, parsed_books=None, is_database_ready=True):
@@ -162,43 +160,10 @@ class Library:
             self.libraryModel.appendRow(item)
 
     def generate_proxymodels(self):
-        self.tableProxyModel = TableProxyModel(
-            self.main_window.temp_dir.path(),
-            self.main_window.tableView.horizontalHeader(),
-            self.main_window.settings['consider_read_at'])
-        self.tableProxyModel.setSourceModel(self.libraryModel)
-        self.tableProxyModel.setSortCaseSensitivity(False)
-        self.main_window.tableView.setModel(self.tableProxyModel)
-
         self.update_proxymodels()
 
     def update_proxymodels(self):
-        # Table proxy model
-        # ^^^ This isn't needed, but it forces a model update every time the
-        # text in the line edit changes. So I guess it is needed.
-        self.tableProxyModel.sort_table_columns(
-            self.main_window.tableView.horizontalHeader().sortIndicatorSection())
-        self.tableProxyModel.sort_table_columns()
-
-        # TODO
-        # Allow sorting by type
-
-        # Index of the sorting drop down corresponding to the
-        # UserRole of the item model
-        # This keeps from having to rearrange all the UserRoles in the
-        # existing model
-        sort_roles = {
-            0: 0,
-            1: 1,
-            2: 2,
-            3: 9,
-            4: 12,
-            5: 7}
-
-        # This can be expanded to other fields by appending to the list
-        sort_order = QtCore.Qt.AscendingOrder
-        if self.main_window.libraryToolBar.sortingBox.currentIndex() in [3, 4, 5]:
-            sort_order = QtCore.Qt.DescendingOrder
+        pass
 
     def generate_library_tags(self):
         db_library_directories = database.DatabaseFunctions(
